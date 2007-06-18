@@ -36,7 +36,10 @@ CHANGE_WARN
 
 WriteMakefile(
     NAME            => $PACKAGE,
+    AUTHOR          => 'Michael G Schwern <schwern@pobox.com>',
+    ABSTRACT_FROM   => "lib/$PACKAGE_FILE.pm", 
     VERSION_FROM    => "lib/$PACKAGE_FILE.pm", # finds $VERSION
+    LICENSE         => "perl",
     PREREQ_PM       => { Cwd        => 3.16,
                          File::Spec => 3.16,
                        },
