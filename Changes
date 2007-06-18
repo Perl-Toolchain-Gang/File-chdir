@@ -1,0 +1,39 @@
+0.07
+    - Fixed testfile bug that prepended "/" in tests on Cygwin
+
+0.06_01 Mon Apr  9 05:17:02 EDT 2007
+    - Development release by David Golden    
+    * Fixed bug that prepended "/" to $CWD for Win32
+    * $CWD changed to use native path separators
+    * Tests fixed on Win32 by always using native separators as well
+    * Upped File::Spec and Cwd dependencies to require many recent bug-fixes
+    - Added note about comparing $CWD to File::Spec generated names
+    - Other minor documentation patches from Schwern
+
+0.06  Thu Aug 14 17:02:32 PDT 2003
+    * Now working under taint mode (thanks Mark Guckeyson)
+    - Small nit in the SYNOPSIS
+    * Removed dependency on File::Spec 0.8 and File::Spec::Functions
+    - Added a LICENSE
+    - Added NOTES about %CWD.
+
+0.05  Mon Nov 26 15:44:20 EST 2001
+    * Added @CWD
+    - $CWD's value now guaranteed to be correct even if some other code
+      calls chdir().
+
+0.04  Mon Nov 26 13:36:24 EST 2001  *UNRELEASED*
+    * The magic chdir() is *gone*
+    * Now works back to 5.004
+
+0.03  Mon Sep  3 20:10:15 EDT 2001
+    * chdir() is being deprecated and will be removed next version!
+    - Gave credit to Abigail and Bryan
+
+0.02  Mon Sep  3 19:51:02 EDT 2001
+    * Added $CWD
+    - chdir() with no args works
+
+0.01  Fri Aug 31 21:15:25 EDT 2001
+    * HA!  It works!
+

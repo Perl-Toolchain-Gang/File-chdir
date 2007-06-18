@@ -1,0 +1,11 @@
+Changes
+MANIFEST
+Makefile.PL
+lib/File/chdir.pm
+t/array.t
+t/chdir.t
+t/lib/Test/Builder.pm
+t/lib/Test/More.pm
+t/lib/Test/Simple.pm
+t/var.t
+META.yml                                Module meta-data (added by MakeMaker)
