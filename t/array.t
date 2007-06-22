@@ -2,11 +2,16 @@
 
 use strict;
 use lib qw(t/lib);
-use Test::More tests => 31;
+use Test::More 'no_plan'; # tests => 33;
 
 BEGIN { use_ok('File::chdir') }
 
 use Cwd;
+use File::Spec;
+
+#--------------------------------------------------------------------------#
+# Fixtures and utility subs
+#--------------------------------------------------------------------------#-
 
 # assemble directories the same way as File::chdir
 BEGIN { *_catdir = \&File::chdir::ARRAY::_catdir };
@@ -14,90 +19,200 @@ BEGIN { *_catdir = \&File::chdir::ARRAY::_catdir };
 # _catdir has OS-specific path separators so do the same for getcwd
 sub _getcwd { File::Spec->canonpath( getcwd ) }
 
+# Utility sub for checking cases
+sub _check_cwd {
+    # report failures at the calling line
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    my $label = pop @_;
+    my @expect = @_;
+    is( _getcwd, _catdir(@expect),       "$label works" );
+    ok( eq_array(\@CWD, [@expect]),      '... and value of @CWD is correct' );
+    is( $CWD,   _catdir(@expect),        '... and value of $CWD is correct' );
+}
+
 my @cwd = grep length, File::Spec->splitdir(Cwd::abs_path);
+
+#--------------------------------------------------------------------------#-
+# Tying test
+#--------------------------------------------------------------------------#-
 
 ok( tied @CWD,      '@CWD is fit to be tied' );
 
-# First, let's try unlocalized push @CWD.
-{
-    push @CWD, 't';
-    is( _getcwd, _catdir(@cwd,'t'),       'unlocalized push @CWD works' );
-    ok( eq_array(\@CWD, [@cwd, 't']),    '  @CWD set' );
-    is( $CWD,   _catdir(@cwd,'t'),       '  $CWD set' );
-}
+#--------------------------------------------------------------------------#
+# Assignment tests
+#--------------------------------------------------------------------------#
 
-is( _getcwd, _catdir(@cwd,'t'),      'unlocalized @CWD unneffected by blocks' );
-ok( eq_array(\@CWD, [@cwd, 't']),   '  @CWD still set' );
+# Non-local
+@CWD = (@cwd, 't');
+_check_cwd( @cwd, 't', 'Ordinary assignment');
 
-# reset
+# Reset
 @CWD = @cwd;
 
-# How about pop?
-{
-    my $popped_dir = pop @CWD;
-    my @new_cwd = @cwd[0..$#cwd-1];
-
-    is( _getcwd, _catdir(@new_cwd),      'unlocalized pop @CWD works' );
-    is( $popped_dir, $cwd[-1],          '  returns popped dir' ); 
-    ok( eq_array(\@CWD, \@new_cwd),     '  @CWD set' );
-    is( $CWD,   _catdir(@new_cwd),      '  $CWD set' );
-}
-
-is( _getcwd, _catdir(@cwd[0..$#cwd-1]), 
-                                  'unlocalized @CWD unneffected by blocks' );
-ok( eq_array(\@CWD, [@cwd[0..$#cwd-1]]),   '  @CWD still set' );
-
-# reset
-@CWD = @cwd;
-
-
-# splice?
-{
-    my @spliced_dirs = splice @CWD, -2;
-    my @new_cwd = @cwd[0..$#cwd-2];
-
-    is( _getcwd, _catdir(@new_cwd),      'unlocalized splice @CWD works' );
-    is( @spliced_dirs, 2,               '  returns right # of dirs' );
-    ok( eq_array(\@spliced_dirs, [@cwd[-2,-1]]), "  and they're correct" );
-    ok( eq_array(\@CWD, \@new_cwd),     '  @CWD set' );
-    is( $CWD,   _catdir(@new_cwd),      '  $CWD set' );
-}
-
-is( _getcwd, _catdir(@cwd[0..$#cwd-2]),
-                                    'unlocalized @CWD unneffected by blocks' );
-ok( eq_array(\@CWD, [@cwd[0..$#cwd-2]]),   '  @CWD still set' );
-
-# reset
-@CWD = @cwd;
-
-# Now an unlocalized assignment
-{
-    @CWD = (@cwd, 't');
-    is( _getcwd, _catdir(@cwd,'t'),       'unlocalized @CWD works' );
-    ok( eq_array(\@CWD, [@cwd, 't']),   '  @CWD set' );
-    is( $CWD,   _catdir(@cwd,'t'),       '  $CWD set' );
-}
-
-is( _getcwd, _catdir(@cwd,'t'),      'unlocalized @CWD unneffected by blocks' );
-ok( eq_array(\@CWD, [@cwd, 't']),   '  @CWD still set' );
-
-# reset
-@CWD = @cwd;
-
-eval { $#CWD = 1; };
-ok( !$@,    '$#CWD assignment is a no-op' );
-
-
-# localized assignment
+# Localized 
 {
     # localizing tied arrays doesn't work, perl bug. :(
     # this is a work around.
     local $CWD;
+
     @CWD = (@cwd, 't');
-    is( _getcwd, _catdir(@cwd,'t'),       'localized @CWD works' );
-    ok( eq_array(\@CWD, [@cwd, 't']),   '  @CWD set' );
-    is( $CWD,   _catdir(@cwd,'t'),       '  $CWD set' );
+    _check_cwd( @cwd, 't', 'Localized assignment' );
 }
 
-is( _getcwd, _catdir(@cwd),    'localized @CWD resets cwd' );
-ok( eq_array(\@CWD, \@cwd),   '  @CWD reset' );
+# Check that localizing $CWD/@CWD reverts properly
+_check_cwd( @cwd, 'Reset of localized assignment' );
+
+#--------------------------------------------------------------------------#
+# Push tests
+#--------------------------------------------------------------------------#
+
+# Non-local
+push @CWD, 't';
+_check_cwd( @cwd, 't', 'Ordinary push');
+
+# Reset
+@CWD = @cwd;
+
+# Localized 
+{
+    # localizing tied arrays doesn't work, perl bug. :(
+    # this is a work around.
+    local $CWD;
+
+    push @CWD, 't';
+    _check_cwd( @cwd, 't', 'Localized push' );
+}
+
+# Check that localizing $CWD/@CWD reverts properly
+_check_cwd( @cwd, 'Reset of localized push' );
+
+#--------------------------------------------------------------------------#
+# Pop tests
+#--------------------------------------------------------------------------#
+
+# Non-local
+my $popped_dir = pop @CWD;
+_check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary pop');
+is( $popped_dir, $cwd[-1],          '... and pop returned popped dir' ); 
+
+# Reset
+@CWD = @cwd;
+
+# Localized 
+{
+    # localizing tied arrays doesn't work, perl bug. :(
+    # this is a work around.
+    local $CWD;
+
+    my $popped_dir = pop @CWD;
+    _check_cwd( @cwd[0 .. $#cwd-1], 'Localized pop');
+}
+
+# Check that localizing $CWD/@CWD reverts properly
+_check_cwd( @cwd, 'Reset of localized pop' );
+
+
+#--------------------------------------------------------------------------#
+# Delete tests - only from the end of the array (like popping)
+#--------------------------------------------------------------------------#
+
+# Non-local
+eval { delete $CWD[$#CWD] };
+is( $@, '', "Ordinary delete from end of \@CWD lives" );
+_check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
+
+# Reset
+@CWD = @cwd;
+
+# Localized 
+{
+    # localizing tied arrays doesn't work, perl bug. :(
+    # this is a work around.
+    local $CWD;
+
+    eval { delete $CWD[$#CWD] };
+    is( $@, '', "Ordinary delete from end of \@CWD lives" );
+    _check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
+
+}
+
+# Check that localizing $CWD/@CWD reverts properly
+_check_cwd( @cwd, 'Reset of localized pop' );
+
+
+#--------------------------------------------------------------------------#
+# Splice tests
+#--------------------------------------------------------------------------#
+
+# Non-local
+my @spliced_dirs;
+
+# splice multiple dirs from end
+push @CWD, 't', 'lib';
+@spliced_dirs = splice @CWD, -2;
+_check_cwd( @cwd, 'Ordinary splice (from end)');
+is( @spliced_dirs, 2, '... and returns right number of dirs' );
+ok( eq_array(\@spliced_dirs, [qw/t lib/]), "... and they're correct" );
+
+# splice a single dir from the middle
+push @CWD, 't', 'lib';
+@spliced_dirs = splice @CWD, -2, 1;
+_check_cwd( @cwd, 'lib', 'Ordinary splice (from middle)');
+is( @spliced_dirs, 1, '... and returns right number of dirs' );
+ok( eq_array(\@spliced_dirs, ['t']), "... and it's correct" );
+
+# Reset
+@CWD = @cwd;
+
+# Localized 
+{
+    # localizing tied arrays doesn't work, perl bug. :(
+    # this is a work around.
+    local $CWD;
+
+    # splice multiple dirs from end
+    push @CWD, 't', 'lib';
+    @spliced_dirs = splice @CWD, -2;
+    _check_cwd( @cwd, 'Localized splice (from end)');
+    is( @spliced_dirs, 2, '... and returns right number of dirs' );
+    ok( eq_array(\@spliced_dirs, [qw/t lib/]), "... and they're correct" );
+
+    # splice a single dir from the middle
+    push @CWD, 't', 'lib';
+    @spliced_dirs = splice @CWD, -2, 1;
+    _check_cwd( @cwd, 'lib', 'Localized splice (from middle)');
+    is( @spliced_dirs, 1, '... and returns right number of dirs' );
+    ok( eq_array(\@spliced_dirs, ['t']), "... and it's correct" );
+}
+
+# Check that localizing $CWD/@CWD reverts properly
+_check_cwd( @cwd, 'Reset of localized splice' );
+
+#--------------------------------------------------------------------------#
+# Exceptions
+#--------------------------------------------------------------------------#
+
+# Now check that errors throw an exception on various activities
+my $target = "doesnt_exist";
+my $err;
+
+# DELETE (middle of array)
+{
+    local $CWD;
+    push @CWD, 't', 'lib';
+    eval { delete $CWD[-2] };
+    $err = $@;
+    ok( $err, 'Deleting $CWD[-2] throws an error' );
+    like( $err,  "/Can't delete except at the end of \@CWD/", 
+        '... and the error message is correct');
+}
+
+
+# PUSH to invalid directory
+eval { push @CWD, $target };
+$err = $@;
+ok( $err, 'Failure to chdir throws an error' );
+my $missing_dir = File::Spec->catfile(@CWD,$target);
+like( $err,  "/Failed to change directory to '\Q$missing_dir\E'/", 
+        '... and the error message is correct');
+

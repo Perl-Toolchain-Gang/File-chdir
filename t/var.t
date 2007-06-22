@@ -2,11 +2,12 @@
 
 use strict;
 use lib qw(t/lib);
-use Test::More tests => 11;
+use Test::More tests => 13;
 
 BEGIN { use_ok('File::chdir') }
 
 use Cwd;
+use File::Spec;
 
 # assemble directories the same way as File::chdir
 BEGIN { *_catdir = \&File::chdir::ARRAY::_catdir };
@@ -45,3 +46,16 @@ $CWD = $cwd;
 
 chdir('t');
 is( $CWD,   _catdir($cwd,'t'),       'chdir() and $CWD work together' );
+
+#--------------------------------------------------------------------------#
+# Exceptions
+#--------------------------------------------------------------------------#
+my $target = "doesnt_exist";
+eval { $CWD = $target };
+my $err = $@;
+ok( $err, 'failure to chdir throws an error' );
+like( $err,  "/Failed to change directory to '\Q$target\E'/", 
+        '... and the error message is correct');
+
+
+

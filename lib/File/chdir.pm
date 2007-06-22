@@ -10,6 +10,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw($CWD @CWD);
 
+use Carp;
 use Cwd;
 use File::Spec;
 
@@ -42,12 +43,12 @@ the B<whole> program.
 
 This sucks.
 
-File::chdir gives you an alternative, $CWD and @CWD.  These two
+File::chdir gives you an alternative, C<$CWD> and C<@CWD>.  These two
 variables combine all the power of C<chdir()>, File::Spec and Cwd.
 
 =head2 $CWD
 
-Use the $CWD variable instead of chdir() and Cwd.
+Use the C<$CWD> variable instead of chdir() and Cwd.
 
     use File::chdir;
     $CWD = $dir;  # just like chdir($dir)!
@@ -61,14 +62,14 @@ It can be localized, and it does the right thing.
     }
     # still /foo out here!
 
-$CWD always returns the absolute path in the native form for the 
+C<$CWD> always returns the absolute path in the native form for the 
 operating system.
 
-$CWD and normal chdir() work together just fine.
+C<$CWD> and normal chdir() work together just fine.
 
 =head2 @CWD
 
-@CWD represents the current working directory as an array, each
+C<@CWD> represents the current working directory as an array, each
 directory in the path is an element of the array.  This can often make
 the directory easier to manipulate, and you don't have to fumble with
 C<File::Spec-E<gt>splitpath> and C<File::Spec-E<gt>catdir> to make
@@ -83,9 +84,9 @@ probably the most useful.
   pop @CWD;                 # same as chdir(File::Spec->updir)
   push @CWD, 'some_dir'     # same as chdir('some_dir')
 
-@CWD and $CWD both work fine together.
+C<@CWD> and C<$CWD> both work fine together.
 
-B<NOTE> Due to a perl bug you can't localize @CWD.  See L</BUGS and
+B<NOTE> Due to a perl bug you can't localize C<@CWD>.  See L</BUGS and
 CAVEATS> for a work around.
 
 =cut
@@ -103,11 +104,15 @@ sub _chdir ($) {
 
     my $Real_CWD = File::Spec->catdir(_abs_path(), $new_dir);
 
-    return CORE::chdir($new_dir);
+    local $Carp::CarpLevel = $Carp::CarpLevel + 1;
+    CORE::chdir($new_dir) 
+        or croak "Failed to change directory to '$new_dir'";
+    return 1;
 }
 
 {
     package File::chdir::SCALAR;
+    use Carp;
 
     sub TIESCALAR { 
         bless [], $_[0];
@@ -121,14 +126,14 @@ sub _chdir ($) {
 
     sub STORE {
         return unless defined $_[1];
-        my $did_chdir = File::chdir::_chdir($_[1]);
-        return $did_chdir ? $Real_CWD : $did_chdir;
+        File::chdir::_chdir($_[1]);
     }
 }
 
 
 {
     package File::chdir::ARRAY;
+    use Carp;
 
     sub TIEARRAY {
         bless {}, $_[0];
@@ -190,8 +195,7 @@ sub _chdir ($) {
         $cwd[$idx] = $val;
         my $dir = _catdir(@cwd);
 
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? $dir : $did_chdir;
+        File::chdir::_chdir($dir);
     }
 
     sub FETCHSIZE { return scalar _cwd_list(); }
@@ -201,8 +205,8 @@ sub _chdir ($) {
         my($self) = shift;
 
         my $dir = _catdir(_cwd_list, @_);
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? $self->FETCHSIZE : $did_chdir;
+        File::chdir::_chdir($dir);
+        return $self->FETCHSIZE;
     }
 
     sub POP {
@@ -211,8 +215,8 @@ sub _chdir ($) {
         my @cwd = _cwd_list;
         my $popped = pop @cwd;
         my $dir = _catdir(@cwd);
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? $popped : $did_chdir;
+        File::chdir::_chdir($dir);
+        return $popped;
     }
 
     sub SHIFT {
@@ -221,16 +225,16 @@ sub _chdir ($) {
         my @cwd = _cwd_list;
         my $shifted = shift @cwd;
         my $dir = _catdir(@cwd);
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? $shifted : $did_chdir;
+        File::chdir::_chdir($dir);
+        return $shifted;
     }
 
     sub UNSHIFT {
         my($self) = shift;
 
         my $dir = _catdir(@_, _cwd_list);
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? $self->FETCHSIZE : $did_chdir;
+        File::chdir::_chdir($dir);
+        return $self->FETCHSIZE;
     }
 
     sub CLEAR  {
@@ -247,8 +251,8 @@ sub _chdir ($) {
         my @cwd = _cwd_list;
         my @orig_dirs = splice @cwd, $offset, $len, @new_dirs;
         my $dir = _catdir(@cwd);
-        my $did_chdir = File::chdir::_chdir($dir);
-        return $did_chdir ? @orig_dirs : $did_chdir;
+        File::chdir::_chdir($dir);
+        return @orig_dirs;
     }
 
     sub EXTEND { }
@@ -258,7 +262,11 @@ sub _chdir ($) {
     }
 
     sub DELETE {
-        die "Even I can't think of what delete \$CWD[\$idx] should do!";
+        my($self, $idx) = @_;
+        croak "Can't delete except at the end of \@CWD"
+            if $idx < $self->FETCHSIZE - 1;
+        local $Carp::CarpLevel = $Carp::CarpLevel + 1;
+        $self->POP;
     }
 }
 
@@ -267,7 +275,7 @@ sub _chdir ($) {
 
 (We omit the C<use File::chdir> from these examples for terseness)
 
-Here's $CWD instead of chdir:
+Here's C<$CWD> instead of chdir:
 
     $CWD = 'foo';           # chdir('foo')
 
@@ -307,7 +315,7 @@ which is much simplier than the equivalent:
         chdir($orig_dir);
     }
 
-@CWD comes in handy when you want to start moving up and down the
+C<@CWD> comes in handy when you want to start moving up and down the
 directory hierarchy in a cross-platform manner without having to use
 File::Spec.
 
@@ -334,11 +342,9 @@ effectively localize @CWD.
         ...
     }
 
-
 =head3 Volumes not handled
 
 There is currently no way to change the current volume via File::chdir.
-
 
 =head1 NOTES
 
@@ -351,12 +357,33 @@ created using File::Spec.  For example:
     doing_stuff_might_chdir();
     is( $CWD, $working_dir, "back to original working_dir?" );
 
+Deleting the last item of C<@CWD> will act like a pop.  Deleting from the
+middle will throw an exception.
+
+    delete @CWD[-1]; # OK
+    delete @CWD[-2]; # Dies
 
 What should %CWD do?  Something with volumes?
 
     # chdir to C:\Program Files\Sierra\Half Life ?
     $CWD{C} = '\\Program Files\\Sierra\\Half Life';
 
+=head1 DIAGNOSTICS
+
+If an error is encountered when changing C<$CWD> or C<@CWD>, one of
+the following exceptions will be thrown:
+
+=over
+
+=item * 
+
+I<Can't delete except at the end of @CWD>
+
+=item *
+
+I<Failed to change directory to '$dir'>
+
+=back
 
 =head1 AUTHOR
 
