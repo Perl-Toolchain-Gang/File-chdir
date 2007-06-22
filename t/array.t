@@ -2,7 +2,7 @@
 
 use strict;
 use lib qw(t/lib);
-use Test::More 'no_plan'; # tests => 33;
+use Test::More tests => 68;
 
 BEGIN { use_ok('File::chdir') }
 
@@ -212,7 +212,7 @@ my $err;
 eval { push @CWD, $target };
 $err = $@;
 ok( $err, 'Failure to chdir throws an error' );
-my $missing_dir = File::Spec->catfile(@CWD,$target);
+my $missing_dir = File::Spec->catfile($CWD,$target);
 like( $err,  "/Failed to change directory to '\Q$missing_dir\E'/", 
         '... and the error message is correct');
 

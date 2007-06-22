@@ -4,7 +4,7 @@ use 5.004;
 
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = "0.07";
+$VERSION = "0.08";
 
 require Exporter;
 @ISA = qw(Exporter);

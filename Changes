@@ -1,9 +1,9 @@
-0.08
+0.08 Thu Jun 21 20:56:50 EDT 2007
     * Croaks if the chdir fails when changing $CWD or @CWD
     * Deleting from end of @CWD acts like a pop
     - Revised and expanded @CWD tests
-    - Changed error message for deleting from middle of @CWD
-    - Added DIAGNOSTICS section to Pod
+    - Revised delete error message for deleting from middle of @CWD
+    - Added DIAGNOSTICS section to documentation
 
 0.07 Mon Jun 18 18:38:00 EDT 2007
     - Fixed testfile bug that prepended "/" in tests on Cygwin
