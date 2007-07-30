@@ -1,4 +1,4 @@
-0.09
+0.09 Mon Jul 30 09:50:28 EDT 2007
     - Updated Makefile.PL to warn about API change in 0.08
     - Added $! diagnostic to error messages
 
