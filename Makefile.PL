@@ -11,7 +11,7 @@ use ExtUtils::MakeMaker;
 
 $PACKAGE = 'File::chdir';
 ($PACKAGE_FILE = $PACKAGE) =~ s|::|/|g;
-$LAST_API_CHANGE = 0.04;
+$LAST_API_CHANGE = 0.08;
 
 eval "require $PACKAGE";
 
@@ -22,8 +22,8 @@ WARNING  WARNING  WARNING  WARNING  WARNING  WARNING  WARNING  WARNING
 
 -----*****>>>>>     THE INTERFACE HAS CHANGED     <<<<<*****----------
 
-The chdir() override has been ELIMINATED.  It's too complicated and
-not worth the trouble.
+As of 0.08, changing \$CWD or \@CWD will die with an error if the directory
+change fails.  Earlier versions of File::chdir failed silently.
 
 WARNING  WARNING  WARNING  WARNING  WARNING  WARNING  WARNING  WARNING
 

@@ -1,3 +1,7 @@
+0.09
+    - Updated Makefile.PL to warn about API change in 0.08
+    - Added $! diagnostic to error messages
+
 0.08 Thu Jun 21 20:56:50 EDT 2007
     * Croaks if the chdir fails when changing $CWD or @CWD
     * Deleting from end of @CWD acts like a pop

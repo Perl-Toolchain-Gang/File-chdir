@@ -4,7 +4,7 @@ use 5.004;
 
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = "0.08";
+$VERSION = "0.09";
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -106,7 +106,7 @@ sub _chdir ($) {
 
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
     CORE::chdir($new_dir) 
-        or croak "Failed to change directory to '$new_dir'";
+        or croak "Failed to change directory to '$new_dir': $!";
     return 1;
 }
 
@@ -422,6 +422,9 @@ The chdir() override was eliminated in 0.04.
 
 David became co-maintainer with 0.06_01 to fix some chronic
 Win32 path bugs.
+
+As of 0.08, if changing $CWD or @CWD fails to change the directory, an
+error will be thrown.
 
 =head1 SEE ALSO
 
