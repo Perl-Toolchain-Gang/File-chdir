@@ -4,7 +4,7 @@ use 5.004;
 
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = "0.09";
+$VERSION = '0.0901';
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -91,7 +91,7 @@ CAVEATS> for a work around.
 
 =cut
 
-sub _abs_path () {
+sub _abs_path { 
     # Otherwise we'll never work under taint mode.
     my($cwd) = Cwd::abs_path =~ /(.*)/;
     # Run through File::Spec, since everything else uses it 
@@ -99,7 +99,7 @@ sub _abs_path () {
 }
 
 my $Real_CWD;
-sub _chdir ($) {
+sub _chdir { 
     my($new_dir) = @_;
 
     my $Real_CWD = File::Spec->catdir(_abs_path(), $new_dir);
