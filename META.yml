@@ -1,0 +1,28 @@
+---
+name: File-chdir
+version: 0.0901
+author:
+  - 'David A. Golden <dagolden@cpan.org>'
+abstract: a more sensible way to change directories
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  Cwd: 3.16
+  File::Spec: 3.16
+provides:
+  File::chdir:
+    file: lib/File/chdir.pm
+    version: 0.0901
+  File::chdir::ARRAY:
+    file: lib/File/chdir.pm
+  File::chdir::SCALAR:
+    file: lib/File/chdir.pm
+generated_by: Module::Build version 0.280801
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
+no_index:
+  directory:
+    - examples
+    - inc

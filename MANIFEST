@@ -13,3 +13,4 @@ xt/criticrc
 xt/perl-critic.t
 xt/pod-coverage.t
 xt/pod.t
+META.yml
