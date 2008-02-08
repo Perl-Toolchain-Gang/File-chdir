@@ -15,7 +15,7 @@ my @modules = all_modules('lib');
 plan tests => scalar @modules; 
 
 for my $mod ( @modules ) {
-    my $doc = "lib/$mod\.pm";
+    my $doc = "lib/$mod\.pod";
     $doc =~ s{::}{/}g;
     pod_coverage_ok( $mod, { pod_from => $doc } );
 }
