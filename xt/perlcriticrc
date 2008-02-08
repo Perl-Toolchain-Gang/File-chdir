@@ -1,4 +1,4 @@
-severity = 4
+severity = 5
 verbose = 8
 
 [Variables::ProhibitPunctuationVars]

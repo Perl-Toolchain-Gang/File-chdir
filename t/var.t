@@ -4,12 +4,12 @@ use strict;
 use lib qw(t/lib);
 use Test::More tests => 13;
 use File::Spec::Functions qw/canonpath catdir/;
-use Cwd qw/getcwd/;
+use Cwd qw/getcwd abs_path/;
 
 BEGIN { use_ok('File::chdir') }
 
 # _catdir has OS-specific path separators so do the same for getcwd
-sub _getcwd { canonpath( getcwd ) }
+sub _getcwd { canonpath( abs_path ) }
 
 my $cwd = _getcwd;
 

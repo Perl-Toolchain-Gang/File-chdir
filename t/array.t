@@ -2,7 +2,7 @@
 
 use strict;
 use lib qw(t/lib);
-use Test::More tests => 68;
+use Test::More tests => 55;
 use File::Spec::Functions qw/canonpath splitdir catdir splitpath catpath/;
 use Cwd qw/getcwd abs_path/;
 
@@ -113,52 +113,6 @@ is( $popped_dir, $cwd[-1],          '... and pop returned popped dir' );
 
     my $popped_dir = pop @CWD;
     _check_cwd( @cwd[0 .. $#cwd-1], 'Localized pop');
-}
-
-# Check that localizing $CWD/@CWD reverts properly
-_check_cwd( @cwd, 'Reset of localized pop' );
-
-
-#--------------------------------------------------------------------------#
-# Delete tests - only from the end of the array (like popping)
-#--------------------------------------------------------------------------#
-
-SKIP: {
-    skip 'delete(@array) not available before Perl 5.6', 13
-        if $] < 5.006;
-
-    # Non-local
-    eval { delete $CWD[$#CWD] };
-    is( $@, '', "Ordinary delete from end of \@CWD lives" );
-    _check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
-
-    # Reset
-    @CWD = @cwd;
-
-    # Localized 
-    {
-        # localizing tied arrays doesn't work, perl bug. :(
-        # this is a work around.
-        local $CWD;
-
-        eval { delete $CWD[$#CWD] };
-        is( $@, '', "Ordinary delete from end of \@CWD lives" );
-        _check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
-
-    }
-    
-    # Exception: DELETE (middle of array)
-    {
-        local $CWD;
-        push @CWD, 't', 'lib';
-        eval { delete $CWD[-2] };
-        my $err = $@;
-        ok( $err, 'Deleting $CWD[-2] throws an error' );
-        like( $err,  "/Can't delete except at the end of \@CWD/", 
-            '... and the error message is correct');
-    }
-
-
 }
 
 # Check that localizing $CWD/@CWD reverts properly

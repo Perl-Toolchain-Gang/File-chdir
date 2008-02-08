@@ -302,7 +302,7 @@ program in some strange directory:
         ...do your work...
     }
 
-which is much simplier than the equivalent:
+which is much simpler than the equivalent:
 
     sub foo {
         use Cwd;

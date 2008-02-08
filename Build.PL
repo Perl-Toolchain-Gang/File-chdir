@@ -18,7 +18,7 @@ my $mb = $class->subclass( code => << "END_CODE" );
         warn "Custom Makefile.PL\n";
         \$self->SUPER::do_create_makefile_pl;
         local *FH;
-        open FH, ">> Makefile.PL" or die $!;
+        open FH, ">> Makefile.PL" or die \$!;
         print {FH} "\nBEGIN {\n$api_warning\n}\n";
         close FH;
     }
