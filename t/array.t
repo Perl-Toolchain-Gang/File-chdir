@@ -116,24 +116,29 @@ _check_cwd( @cwd, 'Reset of localized pop' );
 # Delete tests - only from the end of the array (like popping)
 #--------------------------------------------------------------------------#
 
-# Non-local
-eval { delete $CWD[$#CWD] };
-is( $@, '', "Ordinary delete from end of \@CWD lives" );
-_check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
+SKIP: {
+    skip 'delete(@array) not available before Perl 5.6', 11
+        if $] < 5.006;
 
-# Reset
-@CWD = @cwd;
-
-# Localized 
-{
-    # localizing tied arrays doesn't work, perl bug. :(
-    # this is a work around.
-    local $CWD;
-
+    # Non-local
     eval { delete $CWD[$#CWD] };
     is( $@, '', "Ordinary delete from end of \@CWD lives" );
     _check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
 
+    # Reset
+    @CWD = @cwd;
+
+    # Localized 
+    {
+        # localizing tied arrays doesn't work, perl bug. :(
+        # this is a work around.
+        local $CWD;
+
+        eval { delete $CWD[$#CWD] };
+        is( $@, '', "Ordinary delete from end of \@CWD lives" );
+        _check_cwd( @cwd[0 .. $#cwd-1], 'Ordinary delete from end of @CWD');
+
+    }
 }
 
 # Check that localizing $CWD/@CWD reverts properly
