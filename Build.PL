@@ -34,7 +34,7 @@ $mb->new(
     requires        => {
         # module requirements here
         'Cwd'           => 3.16,
-        'File::Spec'    => 3.16,
+        'File::Spec'    => 3.27,
     },
     meta_add            => { 
         no_index => { 

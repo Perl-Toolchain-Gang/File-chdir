@@ -11,7 +11,7 @@ require Exporter;
 
 use Carp;
 use Cwd;
-use File::Spec;
+use File::Spec::Functions qw/canonpath splitpath catpath splitdir catdir/;
 
 tie $CWD, 'File::chdir::SCALAR' or die "Can't tie \$CWD";
 tie @CWD, 'File::chdir::ARRAY'  or die "Can't tie \@CWD";
@@ -20,14 +20,29 @@ sub _abs_path {
     # Otherwise we'll never work under taint mode.
     my($cwd) = Cwd::abs_path =~ /(.*)/;
     # Run through File::Spec, since everything else uses it 
-    return File::Spec->canonpath($cwd);
+    return canonpath($cwd);
+}
+
+# splitpath but also split directory
+sub _split_cwd {
+    my ($vol, $dir) = splitpath(_abs_path, 1);
+    my @dirs = splitdir( $dir );
+    shift @dirs; # get rid of leading empty "root" directory
+    return ($vol, @dirs);
+}
+
+# catpath, but take list of directories
+# restore the empty root dir and provide an empty file to avoid warnings
+sub _catpath {
+    my ($vol, @dirs) = @_;
+    return catpath($vol, catdir(q{}, @dirs), q{});
 }
 
 my $Real_CWD;
 sub _chdir { 
     my($new_dir) = @_;
 
-    my $Real_CWD = File::Spec->catdir(_abs_path(), $new_dir);
+    my $Real_CWD = catdir(_abs_path(), $new_dir);
 
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
     CORE::chdir($new_dir) 
@@ -39,6 +54,13 @@ sub _chdir {
     package File::chdir::SCALAR;
     use Carp;
 
+    BEGIN { 
+        *_abs_path = \&File::chdir::_abs_path;
+        *_chdir = \&File::chdir::_chdir;
+        *_split_cwd = \&File::chdir::_split_cwd;
+        *_catpath = \&File::chdir::_catpath;
+    }
+
     sub TIESCALAR { 
         bless [], $_[0];
     }
@@ -46,12 +68,12 @@ sub _chdir {
     # To be safe, in case someone chdir'd out from under us, we always
     # check the Cwd explicitly.
     sub FETCH {
-        return File::chdir::_abs_path;
+        return _abs_path;
     }
 
     sub STORE {
         return unless defined $_[1];
-        File::chdir::_chdir($_[1]);
+        _chdir($_[1]);
     }
 }
 
@@ -60,105 +82,79 @@ sub _chdir {
     package File::chdir::ARRAY;
     use Carp;
 
+    BEGIN { 
+        *_abs_path = \&File::chdir::_abs_path; 
+        *_chdir = \&File::chdir::_chdir;
+        *_split_cwd = \&File::chdir::_split_cwd;
+        *_catpath = \&File::chdir::_catpath;
+    }
+
     sub TIEARRAY {
         bless {}, $_[0];
     }
 
-    # splitdir() leaves empty directory names in place on purpose.
-    # I don't think this is the right thing for us, but I could be wrong.
-    #
-    # dagolden: splitdir gives a leading empty string if the path is
-    # absolute and starts with a path separator
-    #   unix: /home/foo  -> "", "home", "foo"
-    #   win32: c:\home\foo -. "c:", "home", "foo"
-    sub _splitdir {
-        return grep length, File::Spec->splitdir($_[0]);
-    }
-
-    sub _cwd_list {
-        return _splitdir(File::chdir::_abs_path);
-    }
-
-    # dagolden: on unix, catdir() with an empty string first will give a 
-    # path from the root (inverse of splitdir) and we need this when 
-    # assembling a path from an array.  On Win32, the first
-    # element in the array should be the volume, but if there are no
-    # arguments at all (i.e. if @CWD was cleared), then we do need an
-    # empty string to get back the root of the current volume
-
-    sub _catdir {
-        my @dirs;
-        if ( @_ && File::Spec->file_name_is_absolute($_[0]) ) {
-            @dirs = @_;  # /foo or c:\
-        }
-        elsif ( @_ && $^O eq 'MSWin32' ) {
-            @dirs = @_;  # c: (File::Spec thinks this is relative)
-        }
-        else {
-            @dirs = ( q{}, @_ ); 
-        }
-        return File::Spec->catdir( @dirs );
-    }
-
     sub FETCH { 
         my($self, $idx) = @_;
-        my @cwd = _cwd_list;
+        my ($vol, @cwd) = _split_cwd;
         return $cwd[$idx];
     }
 
     sub STORE {
         my($self, $idx, $val) = @_;
 
-        my @cwd = ();
+        my ($vol, @cwd) = _split_cwd;
         if( $self->{Cleared} ) {
+            @cwd = ();
             $self->{Cleared} = 0;
-        }
-        else {
-            @cwd = _cwd_list;
         }
 
         $cwd[$idx] = $val;
-        my $dir = _catdir(@cwd);
+        my $dir = _catpath($vol,@cwd);
 
-        File::chdir::_chdir($dir);
+        _chdir($dir);
+        return $cwd[$idx];
     }
 
-    sub FETCHSIZE { return scalar _cwd_list(); }
+    sub FETCHSIZE { 
+        my ($vol, @cwd) = _split_cwd;
+        return scalar @cwd; 
+    }
     sub STORESIZE {}
 
     sub PUSH {
         my($self) = shift;
 
-        my $dir = _catdir(_cwd_list, @_);
-        File::chdir::_chdir($dir);
+        my $dir = _catpath(_split_cwd, @_);
+        _chdir($dir);
         return $self->FETCHSIZE;
     }
 
     sub POP {
         my($self) = shift;
 
-        my @cwd = _cwd_list;
+        my ($vol, @cwd) = _split_cwd;
         my $popped = pop @cwd;
-        my $dir = _catdir(@cwd);
-        File::chdir::_chdir($dir);
+        my $dir = _catpath($vol,@cwd);
+        _chdir($dir);
         return $popped;
     }
 
     sub SHIFT {
         my($self) = shift;
 
-        my @cwd = _cwd_list;
+        my ($vol, @cwd) = _split_cwd;
         my $shifted = shift @cwd;
-        my $dir = _catdir(@cwd);
-        File::chdir::_chdir($dir);
+        my $dir = _catpath($vol,@cwd);
+        _chdir($dir);
         return $shifted;
     }
 
     sub UNSHIFT {
         my($self) = shift;
 
-        my $dir = _catdir(@_, _cwd_list);
-        File::chdir::_chdir($dir);
+        my ($vol, @cwd) = _split_cwd;
+        my $dir = _catpath($vol, @_, @cwd);
+        _chdir($dir);
         return $self->FETCHSIZE;
     }
 
@@ -173,10 +169,10 @@ sub _chdir {
         my $len = shift || $self->FETCHSIZE - $offset;
         my @new_dirs = @_;
         
-        my @cwd = _cwd_list;
+        my ($vol, @cwd) = _split_cwd;
         my @orig_dirs = splice @cwd, $offset, $len, @new_dirs;
-        my $dir = _catdir(@cwd);
-        File::chdir::_chdir($dir);
+        my $dir = _catpath($vol, @cwd);
+        _chdir($dir);
         return @orig_dirs;
     }
 

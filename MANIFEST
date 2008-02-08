@@ -9,8 +9,6 @@ t/lib/Test/Builder.pm
 t/lib/Test/More.pm
 t/lib/Test/Simple.pm
 t/var.t
-xt/criticrc
-xt/perl-critic.t
 xt/pod-coverage.t
 xt/pod.t
 META.yml
