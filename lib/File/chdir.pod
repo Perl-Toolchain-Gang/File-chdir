@@ -165,7 +165,7 @@ There is currently no way to change the current volume via File::chdir.
 
 =head1 NOTES
 
-C<<< $CWD >>> returns the current directory using native path separators, i.e. ''
+C<<< $CWD >>> returns the current directory using native path separators, i.e. \ 
 on Win32.  This ensures that C<<< $CWD >>> will compare correctly with directories
 created using File::Spec.  For example:
 

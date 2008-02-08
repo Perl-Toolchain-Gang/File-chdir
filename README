@@ -150,7 +150,7 @@ CAVEATS
     There is currently no way to change the current volume via File::chdir.
 
 NOTES
-    $CWD returns the current directory using native path separators, i.e. ''
+    $CWD returns the current directory using native path separators, i.e. \
     on Win32. This ensures that $CWD will compare correctly with directories
     created using File::Spec. For example:
 
