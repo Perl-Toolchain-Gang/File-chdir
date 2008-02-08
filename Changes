@@ -1,3 +1,9 @@
+0.10
+    - File::Spec 3.2501 breaks File::chdir on Win32; updated prerequsiite to 
+      latest File::Spec (3.27) and rewrote internals of File::chdir
+    - Added Build.PL and other files (e.g. INSTALL, LICENSE) to the tarball
+    - Minor documentation changes/additions
+
 0.0901
     - removed unnecessary prototypes on internal functions (perl critic)
     - cosmetic changes to distribution package (README, extra tests in xt)

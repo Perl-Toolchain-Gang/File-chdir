@@ -8,7 +8,7 @@ WriteMakefile
           'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/File/chdir.pm',
           'PREREQ_PM' => {
-                           'File::Spec' => '3.16',
+                           'File::Spec' => '3.27',
                            'Cwd' => '3.16'
                          }
         )

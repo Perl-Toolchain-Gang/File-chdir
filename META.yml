@@ -1,6 +1,6 @@
 ---
 name: File-chdir
-version: 0.0901
+version: 0.10
 author:
   - 'David A. Golden <dagolden@cpan.org>'
 abstract: a more sensible way to change directories
@@ -9,11 +9,11 @@ resources:
   license: http://dev.perl.org/licenses/
 requires:
   Cwd: 3.16
-  File::Spec: 3.16
+  File::Spec: 3.27
 provides:
   File::chdir:
     file: lib/File/chdir.pm
-    version: 0.0901
+    version: 0.10
   File::chdir::ARRAY:
     file: lib/File/chdir.pm
   File::chdir::SCALAR:

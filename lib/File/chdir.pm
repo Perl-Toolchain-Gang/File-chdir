@@ -2,7 +2,7 @@ package File::chdir;
 use 5.004;
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = '0.0902';
+$VERSION = '0.10';
 $VERSION = eval $VERSION; ## no critic
 
 require Exporter;
@@ -327,6 +327,20 @@ You can easily change your parent directory:
     $CWD[-2] = 'foo';
 
 = CAVEATS
+
+=== Assigning to {@CWD} calls {chdir()} for each element
+
+    @CWD = qw/a b c d/;
+
+Internally, Perl clears {@CWD} and assigns each element in turn.  Thus, this
+code above will do this:
+
+    chdir 'a';
+    chdir 'a/b';
+    chdir 'a/b/c';
+    chdir 'a/b/c/d';
+
+Generally, avoid assigning to {@CWD} and just use push and pop instead.
 
 === {local @CWD} does not work.
 
