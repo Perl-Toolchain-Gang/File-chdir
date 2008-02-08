@@ -10,6 +10,7 @@ Makefile.PL
 MANIFEST
 META.yml
 README
+t/array-delete.t
 t/array.t
 t/chdir.t
 t/lib/Test/Builder.pm
