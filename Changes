@@ -1,3 +1,8 @@
+0.1001
+
+    - testfix: work around odd Test::Builder errors on perl 5.6.2 dying in 
+      the middle of a "push"
+    
 0.10 Fri Feb  8 08:42:53 EST 2008
     - File::Spec 3.2501 broke File::chdir on Win32; updated prerequisite to 
       latest File::Spec (3.27) and rewrote internals of File::chdir 

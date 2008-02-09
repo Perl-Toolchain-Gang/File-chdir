@@ -2,7 +2,7 @@ package File::chdir;
 use 5.004;
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = '0.10';
+$VERSION = '0.1001';
 $VERSION = eval $VERSION; ## no critic
 
 require Exporter;
@@ -38,15 +38,13 @@ sub _catpath {
     return catpath($vol, catdir(q{}, @dirs), q{});
 }
 
-my $Real_CWD;
 sub _chdir { 
     my($new_dir) = @_;
 
-    my $Real_CWD = catdir(_abs_path(), $new_dir);
-
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
-    CORE::chdir($new_dir) 
-        or croak "Failed to change directory to '$new_dir': $!";
+    if ( ! CORE::chdir($new_dir) ) {
+        croak "Failed to change directory to '$new_dir': $!";
+    };
     return 1;
 }
 

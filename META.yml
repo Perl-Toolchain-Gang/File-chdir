@@ -1,6 +1,6 @@
 ---
 name: File-chdir
-version: 0.10
+version: 0.1001
 author:
   - 'David A. Golden <dagolden@cpan.org>'
 abstract: a more sensible way to change directories
@@ -13,7 +13,7 @@ requires:
 provides:
   File::chdir:
     file: lib/File/chdir.pm
-    version: 0.10
+    version: 0.1001
   File::chdir::ARRAY:
     file: lib/File/chdir.pm
   File::chdir::SCALAR:
