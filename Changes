@@ -1,4 +1,4 @@
-0.1001
+0.1001 Sat Feb  9 13:07:05 EST 2008
 
     - testfix: work around odd Test::Builder errors on perl 5.6.2 dying in 
       the middle of a "push"
