@@ -1,3 +1,7 @@
+0.1002 Mon Feb 11 19:47:46 EST 2008
+
+    - testfix: 0.1001 accidentally left many array tests commented out
+    
 0.1001 Sat Feb  9 13:07:05 EST 2008
 
     - testfix: work around odd Test::Builder errors on perl 5.6.2 dying in 

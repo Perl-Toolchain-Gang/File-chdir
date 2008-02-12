@@ -2,7 +2,7 @@ NAME
     File::chdir - a more sensible way to change directories
 
 VERSION
-    This documentation describes version 0.1001.
+    This documentation describes version 0.1002.
 
 SYNOPSIS
        use File::chdir;
