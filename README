@@ -2,18 +2,18 @@ NAME
     File::chdir - a more sensible way to change directories
 
 VERSION
-    This documentation describes version 0.1002.
+    This documentation describes version 0.1003.
 
 SYNOPSIS
        use File::chdir;
-     
-   $CWD = "/foo/bar";     # now in /foo/bar
+ 
+       $CWD = "/foo/bar";     # now in /foo/bar
        {
            local $CWD = "/moo/baz";  # now in /moo/baz
            ...
        }
-     
-   # still in /foo/bar!
+ 
+       # still in /foo/bar!
 
 DESCRIPTION
     Perl's "chdir()" has the unfortunate problem of being very, very, very
@@ -103,10 +103,10 @@ EXAMPLES
              use Cwd;
              my $orig_dir = Cwd::abs_path;
              chdir('some/other/dir');
-     
-         ...do your work...
-     
-         chdir($orig_dir);
+ 
+             ...do your work...
+ 
+             chdir($orig_dir);
          }
 
     @CWD comes in handy when you want to start moving up and down the

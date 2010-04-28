@@ -2,7 +2,7 @@ package File::chdir;
 use 5.004;
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = '0.1002';
+$VERSION = '0.1003';
 $VERSION = eval $VERSION; ## no critic
 
 require Exporter;
