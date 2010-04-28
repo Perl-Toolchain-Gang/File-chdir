@@ -1,3 +1,7 @@
+0.1003 Tue Apr 27 21:21:32 EDT 2010
+
+    - testfix: remove -T flag in tests
+
 0.1002 Mon Feb 11 19:47:46 EST 2008
 
     - testfix: 0.1001 accidentally left many array tests commented out
