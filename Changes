@@ -1,3 +1,10 @@
+Changes for File-chdir
+
+0.1004
+
+    - Build.Pl and Makefile.PL will bail out on Perl 5.13.1, which
+      accidentally broke File::chdir
+
 0.1003 Tue Apr 27 21:21:32 EDT 2010
 
     - testfix: remove -T flag in tests
