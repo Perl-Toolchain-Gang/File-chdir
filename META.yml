@@ -17,7 +17,7 @@ no_index:
 provides:
   File::chdir:
     file: lib/File/chdir.pm
-    version: 0.1003
+    version: 0.1004
   File::chdir::ARRAY:
     file: lib/File/chdir.pm
   File::chdir::SCALAR:
@@ -27,4 +27,4 @@ requires:
   File::Spec: 3.27
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.1003
+version: 0.1004
