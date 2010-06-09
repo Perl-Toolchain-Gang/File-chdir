@@ -8,7 +8,11 @@ eval "require $class";
 # Do Schwern's API warnings and make sure it appends to generated Makefile.PL
 my $api_warning = do { local $/; <DATA> };
 eval $api_warning;
-warn $@ if $@;
+if ( $@ ) {
+  die $@ if $@ =~ /OS unsupported/;
+  warn $@;
+}
+
 $api_warning = quotemeta($api_warning);
 
 my $mb = $class->subclass( code => << "END_CODE" );
@@ -25,7 +29,7 @@ my $mb = $class->subclass( code => << "END_CODE" );
 
 END_CODE
 
-$mb->new( 
+$mb->new(
     module_name         => 'File::chdir',
     dist_author         => 'David A. Golden <dagolden@cpan.org>',
     license             => 'perl',
@@ -36,17 +40,20 @@ $mb->new(
         'Cwd'           => 3.16,
         'File::Spec'    => 3.27,
     },
-    meta_add            => { 
-        no_index => { 
+    meta_add            => {
+        no_index => {
             directory => [ qw{
                 examples
                 inc
             }],
-        } 
+        }
     },
 )->create_build_script;
 
 __DATA__
+die "OS unsupported: Perl 5.13.1 accidentally broke File::chdir. Aborting!\n"
+  if $] eq "5.013001";
+
 use vars qw/$PACKAGE $LAST_API_CHANGE/;
 $PACKAGE = 'File::chdir';
 $LAST_API_CHANGE = 0.08;

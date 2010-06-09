@@ -15,6 +15,9 @@ WriteMakefile
 ;
 
 BEGIN {
+die "OS unsupported: Perl 5.13.1 accidentally broke File::chdir. Aborting!\n"
+  if $] eq "5.013001";
+
 use vars qw/$PACKAGE $LAST_API_CHANGE/;
 $PACKAGE = 'File::chdir';
 $LAST_API_CHANGE = 0.08;
