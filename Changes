@@ -2,6 +2,8 @@ Changes for File-chdir
 
 {{ $NEXT }}
 
+    - Handle directories with newlines [rt.cpan.org #72114]
+
 0.1005    2011-11-02 14:21:27 America/New_York
 
     - Fixed rt.cpan.org #53064 [Michael Schwern]

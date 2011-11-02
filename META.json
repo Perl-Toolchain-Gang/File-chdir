@@ -54,15 +54,15 @@
    "provides" : {
       "File::chdir" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1005"
+         "version" : "0.1006"
       },
       "File::chdir::ARRAY" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1005"
+         "version" : "0.1006"
       },
       "File::chdir::SCALAR" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1005"
+         "version" : "0.1006"
       }
    },
    "release_status" : "stable",
@@ -78,6 +78,6 @@
          "web" : "https://github.com/dagolden/file-chdir"
       }
    },
-   "version" : "0.1005"
+   "version" : "0.1006"
 }
 
