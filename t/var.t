@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
 
 use strict;
-use lib qw(t/lib);
 use Test::More tests => 13;
 use File::Spec::Functions qw/canonpath catdir/;
 use Cwd qw/getcwd abs_path/;

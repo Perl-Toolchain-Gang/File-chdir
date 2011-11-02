@@ -44,15 +44,9 @@
       },
       "test" : {
          "requires" : {
-            "Config" : 0,
-            "Data::Dumper" : 0,
             "File::Find" : 0,
             "File::Temp" : 0,
-            "IO::Handle" : 0,
-            "PerlIO" : 0,
-            "overload" : 0,
-            "perl" : "5.006",
-            "threads::shared" : 0,
+            "Test::More" : 0,
             "warnings" : 0
          }
       }

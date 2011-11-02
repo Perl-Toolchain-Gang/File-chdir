@@ -4,6 +4,8 @@ Changes for File-chdir
 
     - Fixed rt.cpan.org #53064 [Michael Schwern]
 
+    - Removes bundled Test::More
+
     - Converted distribution builder to Dist::Zilla
 
 0.1004 Wed Jun  9 14:14:54 EDT 2010
