@@ -2,6 +2,8 @@ Changes for File-chdir
 
 {{ $NEXT }}
 
+0.1005    2011-11-02 14:21:27 America/New_York
+
     - Fixed rt.cpan.org #53064 [Michael Schwern]
 
     - Removes bundled Test::More
