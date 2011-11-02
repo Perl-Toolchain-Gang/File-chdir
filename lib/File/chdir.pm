@@ -7,7 +7,7 @@ $VERSION = eval $VERSION; ## no critic
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw($CWD @CWD);
+@EXPORT = qw(*CWD);
 
 use Carp;
 use Cwd;
