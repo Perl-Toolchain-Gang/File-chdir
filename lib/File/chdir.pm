@@ -2,16 +2,16 @@ package File::chdir;
 use 5.004;
 use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
-$VERSION = '0.1004';
-$VERSION = eval $VERSION; ## no critic
+# ABSTRACT: a more sensible way to change directories
+# VERSION
 
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(*CWD);
 
 use Carp;
-use Cwd;
-use File::Spec::Functions qw/canonpath splitpath catpath splitdir catdir/;
+use Cwd 3.16;
+use File::Spec::Functions 3.27 qw/canonpath splitpath catpath splitdir catdir/;
 
 tie $CWD, 'File::chdir::SCALAR' or die "Can't tie \$CWD";
 tie @CWD, 'File::chdir::ARRAY'  or die "Can't tie \@CWD";
@@ -193,14 +193,6 @@ sub _chdir {
 __END__
 
 =begin wikidoc
-
-= NAME
-
-File::chdir - a more sensible way to change directories
-
-= VERSION
-
-This documentation describes version %%VERSION%%.
 
 = SYNOPSIS
 
@@ -385,30 +377,6 @@ the following exceptions will be thrown:
 
 * ~Can't delete except at the end of @CWD~
 * ~Failed to change directory to '$dir'~
-
-= BUGS
-
-Please report any bugs or feature using the CPAN Request Tracker.  
-Bugs can be submitted through the web interface at 
-[http://rt.cpan.org/Dist/Display.html?Queue=File-chdir]
-
-When submitting a bug or request, please include a test-file or a patch to an
-existing test-file that illustrates the bug or desired feature.
-
-= AUTHOR
-
-* Michael G Schwern <schwern@pobox.com> (original author)
-* David A Golden <dagolden@cpan.org> (current maintainer)
-
-= LICENSE
-
-Copyright 2001-2003 by Michael G Schwern <schwern@pobox.com>.
-Portions copyright 2006-2007 by David A Golden <dagolden@cpan.org>.
-
-This program is free software; you can redistribute it and/or 
-modify it under the same terms as Perl itself.
-
-See [http://dev.perl.org/licenses/]
 
 = HISTORY
 

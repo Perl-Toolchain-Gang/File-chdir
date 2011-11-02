@@ -1,5 +1,8 @@
 Changes for File-chdir
 
+{{ $NEXT }}
+
+
 0.1004 Wed Jun  9 14:14:54 EDT 2010
 
     - Build.Pl and Makefile.PL will bail out on Perl 5.13.1, which
