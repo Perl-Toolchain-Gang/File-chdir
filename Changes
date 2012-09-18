@@ -2,6 +2,8 @@ Changes for File-chdir
 
 {{ $NEXT }}
 
+0.1007    2012-09-17 20:29:43 America/New_York
+
     - Fixed broken Pod link; reordered CAVEATS section
 
 0.1006    2011-11-02 18:11:13 America/New_York
