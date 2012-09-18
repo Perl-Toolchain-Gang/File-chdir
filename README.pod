@@ -6,7 +6,7 @@ File::chdir - a more sensible way to change directories
 
 =head1 VERSION
 
-version 0.1006
+version 0.1007
 
 =head1 SYNOPSIS
 
@@ -48,7 +48,7 @@ It can be localized, and it does the right thing.
      }
      # still /foo out here!
 
-C<<< $CWD >>> always returns the absolute path in the native form for the 
+C<<< $CWD >>> always returns the absolute path in the native form for the
 operating system.
 
 C<<< $CWD >>> and normal C<<< chdir() >>> work together just fine.
@@ -71,7 +71,7 @@ probably the most useful.
 
 C<<< @CWD >>> and C<<< $CWD >>> both work fine together.
 
-B<NOTE> Due to a perl bug you can't localize C<<< @CWD >>>.  See L</BUGS and> for a work around.
+B<NOTE> Due to a perl bug you can't localize C<<< @CWD >>>.  See L</CAVEATS> for a work around.
 
 =head1 EXAMPLES
 
@@ -131,6 +131,18 @@ You can easily change your parent directory:
 
 =head1 CAVEATS
 
+=head3 C<<< local @CWD >>> does not work.
+
+C<<< local @CWD> >>> will not localize C<<< @CWD >>>.  This is a bug in Perl, you
+can't localize tied arrays.  As a work around localizing $CWD will
+effectively localize @CWD.
+
+     {
+         local $CWD;
+         pop @CWD;
+         ...
+     }
+
 =head3 Assigning to C<<< @CWD >>> calls C<<< chdir() >>> for each element
 
      @CWD = qw/a b c d/;
@@ -145,25 +157,13 @@ code above will do this:
 
 Generally, avoid assigning to C<<< @CWD >>> and just use push and pop instead.
 
-=head3 C<<< local @CWD >>> does not work.
-
-C<<< local @CWD> >>> will not localize C<<< @CWD >>>.  This is a bug in Perl, you
-can't localize tied arrays.  As a work around localizing $CWD will
-effectively localize @CWD.
-
-     {
-         local $CWD;
-         pop @CWD;
-         ...
-     }
-
 =head3 Volumes not handled
 
 There is currently no way to change the current volume via File::chdir.
 
 =head1 NOTES
 
-C<<< $CWD >>> returns the current directory using native path separators, i.e. \ 
+C<<< $CWD >>> returns the current directory using native path separators, i.e. \
 on Win32.  This ensures that C<<< $CWD >>> will compare correctly with directories
 created using File::Spec.  For example:
 
@@ -218,18 +218,18 @@ error will be thrown.
 
 =head1 SEE ALSO
 
-L<File::pushd>, L<File::Spec>, L<Cwd>, L<perlfunc/chdir>, 
+L<File::pushd>, L<File::Spec>, L<Cwd>, L<perlfunc/chdir>,
 "Animal House" L<http://www.imdb.com/title/tt0077975/quotes>
 
-=for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders
+=for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
 
 =head1 SUPPORT
 
 =head2 Bugs / Feature Requests
 
-Please report any bugs or feature requests by email to C<bug-file-chdir at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/Public/Dist/Display.html?Name=File-chdir>. You will be automatically notified of any
-progress on the request by the system.
+Please report any bugs or feature requests through the issue tracker
+at L<https://rt.cpan.org/Public/Dist/Display.html?Name=File-chdir>.
+You will be notified automatically of any progress on your issue.
 
 =head2 Source Code
 
@@ -238,7 +238,7 @@ public review and contribution under the terms of the license.
 
 L<https://github.com/dagolden/file-chdir>
 
-  git clone https://github.com/dagolden/file-chdir.git
+  git clone git://github.com/dagolden/file-chdir.git
 
 =head1 AUTHORS
 
@@ -256,7 +256,7 @@ Michael G Schwern <schwern@pobox.com> (original author)
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Michael G Schwern and David A Golden.
+This software is copyright (c) 2012 by Michael G Schwern and David A Golden.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

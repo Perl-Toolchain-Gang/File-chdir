@@ -5,7 +5,7 @@
       "Michael G Schwern <schwern@pobox.com> (original author)"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300002, CPAN::Meta::Converter version 2.112580",
+   "generated_by" : "Dist::Zilla version 4.300021, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -33,51 +33,51 @@
       },
       "runtime" : {
          "requires" : {
-            "Carp" : 0,
+            "Carp" : "0",
             "Cwd" : "3.16",
-            "Exporter" : 0,
+            "Exporter" : "0",
             "File::Spec::Functions" : "3.27",
             "perl" : "5.006",
-            "strict" : 0,
-            "vars" : 0
+            "strict" : "0",
+            "vars" : "0"
          }
       },
       "test" : {
          "requires" : {
-            "File::Find" : 0,
-            "File::Temp" : 0,
-            "Test::More" : 0,
-            "warnings" : 0
+            "File::Find" : "0",
+            "File::Temp" : "0",
+            "Test::More" : "0",
+            "warnings" : "0"
          }
       }
    },
    "provides" : {
       "File::chdir" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1006"
+         "version" : "0.1007"
       },
       "File::chdir::ARRAY" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1006"
+         "version" : "0.1007"
       },
       "File::chdir::SCALAR" : {
          "file" : "lib/File/chdir.pm",
-         "version" : "0.1006"
+         "version" : "0.1007"
       }
    },
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "mailto" : "bug-file-chdir at rt.cpan.org",
-         "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=File-chdir"
+         "mailto" : "bug-File-chdir@rt.cpan.org",
+         "web" : "https://rt.cpan.org/Public/Dist/Display.html?Name=File-chdir"
       },
-      "homepage" : "https://github.com/dagolden/file-chdir",
+      "homepage" : "https://metacpan.org/release/File-chdir",
       "repository" : {
          "type" : "git",
-         "url" : "https://github.com/dagolden/file-chdir.git",
+         "url" : "git://github.com/dagolden/file-chdir.git",
          "web" : "https://github.com/dagolden/file-chdir"
       }
    },
-   "version" : "0.1006"
+   "version" : "0.1007"
 }
 
