@@ -16,10 +16,10 @@ use File::Spec::Functions 3.27 qw/canonpath splitpath catpath splitdir catdir/;
 tie $CWD, 'File::chdir::SCALAR' or die "Can't tie \$CWD";
 tie @CWD, 'File::chdir::ARRAY'  or die "Can't tie \@CWD";
 
-sub _abs_path { 
+sub _abs_path {
     # Otherwise we'll never work under taint mode.
     my($cwd) = Cwd::abs_path =~ /(.*)/s;
-    # Run through File::Spec, since everything else uses it 
+    # Run through File::Spec, since everything else uses it
     return canonpath($cwd);
 }
 
@@ -38,7 +38,7 @@ sub _catpath {
     return catpath($vol, catdir(q{}, @dirs), q{});
 }
 
-sub _chdir { 
+sub _chdir {
     my($new_dir) = @_;
 
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
@@ -52,14 +52,14 @@ sub _chdir {
     package File::chdir::SCALAR;
     use Carp;
 
-    BEGIN { 
+    BEGIN {
         *_abs_path = \&File::chdir::_abs_path;
         *_chdir = \&File::chdir::_chdir;
         *_split_cwd = \&File::chdir::_split_cwd;
         *_catpath = \&File::chdir::_catpath;
     }
 
-    sub TIESCALAR { 
+    sub TIESCALAR {
         bless [], $_[0];
     }
 
@@ -80,8 +80,8 @@ sub _chdir {
     package File::chdir::ARRAY;
     use Carp;
 
-    BEGIN { 
-        *_abs_path = \&File::chdir::_abs_path; 
+    BEGIN {
+        *_abs_path = \&File::chdir::_abs_path;
         *_chdir = \&File::chdir::_chdir;
         *_split_cwd = \&File::chdir::_split_cwd;
         *_catpath = \&File::chdir::_catpath;
@@ -91,7 +91,7 @@ sub _chdir {
         bless {}, $_[0];
     }
 
-    sub FETCH { 
+    sub FETCH {
         my($self, $idx) = @_;
         my ($vol, @cwd) = _split_cwd;
         return $cwd[$idx];
@@ -113,9 +113,9 @@ sub _chdir {
         return $cwd[$idx];
     }
 
-    sub FETCHSIZE { 
+    sub FETCHSIZE {
         my ($vol, @cwd) = _split_cwd;
-        return scalar @cwd; 
+        return scalar @cwd;
     }
     sub STORESIZE {}
 
@@ -166,7 +166,7 @@ sub _chdir {
         my $offset = shift || 0;
         my $len = shift || $self->FETCHSIZE - $offset;
         my @new_dirs = @_;
-        
+
         my ($vol, @cwd) = _split_cwd;
         my @orig_dirs = splice @cwd, $offset, $len, @new_dirs;
         my $dir = _catpath($vol, @cwd);
@@ -175,7 +175,7 @@ sub _chdir {
     }
 
     sub EXTEND { }
-    sub EXISTS { 
+    sub EXISTS {
         my($self, $idx) = @_;
         return $self->FETCHSIZE >= $idx ? 1 : 0;
     }
@@ -234,7 +234,7 @@ It can be localized, and it does the right thing.
     }
     # still /foo out here!
 
-{$CWD} always returns the absolute path in the native form for the 
+{$CWD} always returns the absolute path in the native form for the
 operating system.
 
 {$CWD} and normal {chdir()} work together just fine.
@@ -257,8 +257,7 @@ probably the most useful.
 
 {@CWD} and {$CWD} both work fine together.
 
-*NOTE* Due to a perl bug you can't localize {@CWD}.  See [/BUGS and
-CAVEATS] for a work around.
+*NOTE* Due to a perl bug you can't localize {@CWD}.  See [/CAVEATS] for a work around.
 
 = EXAMPLES
 
@@ -318,6 +317,18 @@ You can easily change your parent directory:
 
 = CAVEATS
 
+=== {local @CWD} does not work.
+
+{local @CWD>} will not localize {@CWD}.  This is a bug in Perl, you
+can't localize tied arrays.  As a work around localizing $CWD will
+effectively localize @CWD.
+
+    {
+        local $CWD;
+        pop @CWD;
+        ...
+    }
+
 === Assigning to {@CWD} calls {chdir()} for each element
 
     @CWD = qw/a b c d/;
@@ -332,25 +343,13 @@ code above will do this:
 
 Generally, avoid assigning to {@CWD} and just use push and pop instead.
 
-=== {local @CWD} does not work.
-
-{local @CWD>} will not localize {@CWD}.  This is a bug in Perl, you
-can't localize tied arrays.  As a work around localizing $CWD will
-effectively localize @CWD.
-
-    {
-        local $CWD;
-        pop @CWD;
-        ...
-    }
-
 === Volumes not handled
 
 There is currently no way to change the current volume via File::chdir.
 
 = NOTES
 
-{$CWD} returns the current directory using native path separators, i.e. \ 
+{$CWD} returns the current directory using native path separators, i.e. \
 on Win32.  This ensures that {$CWD} will compare correctly with directories
 created using File::Spec.  For example:
 
@@ -396,7 +395,7 @@ error will be thrown.
 
 = SEE ALSO
 
-[File::pushd], [File::Spec], [Cwd], [perlfunc/chdir], 
+[File::pushd], [File::Spec], [Cwd], [perlfunc/chdir],
 "Animal House" [http://www.imdb.com/title/tt0077975/quotes]
 
 =end wikidoc

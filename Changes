@@ -2,6 +2,8 @@ Changes for File-chdir
 
 {{ $NEXT }}
 
+    - Fixed broken Pod link; reordered CAVEATS section
+
 0.1006    2011-11-02 18:11:13 America/New_York
 
     - Handle directories with newlines [rt.cpan.org #72114]
