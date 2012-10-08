@@ -319,7 +319,7 @@ You can easily change your parent directory:
 
 === {local @CWD} does not work.
 
-{local @CWD>} will not localize {@CWD}.  This is a bug in Perl, you
+{local @CWD} will not localize {@CWD}.  This is a bug in Perl, you
 can't localize tied arrays.  As a work around localizing $CWD will
 effectively localize @CWD.
 
