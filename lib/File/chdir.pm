@@ -39,7 +39,8 @@ sub _catpath {
 }
 
 sub _chdir {
-    my($new_dir) = @_;
+    # Untaint target directory
+    my ($new_dir) = $_[0] =~ /(.*)/s;
 
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
     if ( ! CORE::chdir($new_dir) ) {
