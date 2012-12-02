@@ -6,7 +6,7 @@ use warnings;
 use Test::More;
 
 use File::chdir;
-use Cwd qw(abs_path);
+use Cwd qw(getcwd);
 
 my $Orig_Cwd = $CWD;
 
@@ -17,11 +17,11 @@ plan skip_all => "Can't make a directory with a newline in it" unless $Can_mkdir
 
 {
     local $CWD = $Test_Dir;
-    is $CWD, abs_path;
+    is $CWD, getcwd;
 }
 
 is $CWD, $Orig_Cwd;
-is abs_path, $Orig_Cwd;
+is getcwd, $Orig_Cwd;
 
 END {
     chdir $Orig_Cwd;  # just in case
