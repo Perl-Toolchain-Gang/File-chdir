@@ -296,7 +296,7 @@ which is much simpler than the equivalent:
 
     sub foo {
         use Cwd;
-        my $orig_dir = Cwd::abs_path;
+        my $orig_dir = Cwd::getcwd;
         chdir('some/other/dir');
 
         ...do your work...
