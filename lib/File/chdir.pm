@@ -18,7 +18,7 @@ tie @CWD, 'File::chdir::ARRAY'  or die "Can't tie \@CWD";
 
 sub _abs_path {
     # Otherwise we'll never work under taint mode.
-    my($cwd) = Cwd::abs_path =~ /(.*)/s;
+    my($cwd) = Cwd::getcwd =~ /(.*)/s;
     # Run through File::Spec, since everything else uses it
     return canonpath($cwd);
 }
