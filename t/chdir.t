@@ -3,12 +3,12 @@
 use strict;
 use Test::More tests => 6;
 use File::Spec::Functions qw/canonpath catdir/;
-use Cwd qw/getcwd abs_path/;
+use Cwd qw/getcwd/;
 
 BEGIN { use_ok('File::chdir') }
 
 # _catdir has OS-specific path separators so do the same for getcwd
-sub _getcwd { canonpath( abs_path ) }
+sub _getcwd { canonpath( getcwd ) }
 
 my($cwd) = _getcwd =~ /(.*)/;  # detaint otherwise nothing's gonna work
 
