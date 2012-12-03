@@ -3,7 +3,7 @@
 use strict;
 use Test::More tests => 55;
 use File::Spec::Functions qw/canonpath splitdir catdir splitpath catpath/;
-use Cwd qw/getcwd abs_path/;
+use Cwd qw/getcwd/;
 
 BEGIN { use_ok('File::chdir') }
 
@@ -12,7 +12,7 @@ BEGIN { use_ok('File::chdir') }
 #--------------------------------------------------------------------------#-
 
 # _catdir has OS-specific path separators so do the same for getcwd
-sub _getcwd { canonpath( abs_path ) }
+sub _getcwd { canonpath( getcwd ) }
 
 # reassemble
 sub _catpath {
@@ -21,7 +21,7 @@ sub _catpath {
 }
 
 # get $vol here and use it later
-my ($vol,$cwd) = splitpath(canonpath(abs_path),1);
+my ($vol,$cwd) = splitpath(canonpath(getcwd),1);
 
 # get directory list the way a user would use it -- without empty leading dir
 # as returned by splitdir;

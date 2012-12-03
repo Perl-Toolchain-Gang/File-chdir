@@ -18,7 +18,7 @@ tie @CWD, 'File::chdir::ARRAY'  or die "Can't tie \@CWD";
 
 sub _abs_path {
     # Otherwise we'll never work under taint mode.
-    my($cwd) = Cwd::abs_path =~ /(.*)/s;
+    my($cwd) = Cwd::getcwd =~ /(.*)/s;
     # Run through File::Spec, since everything else uses it
     return canonpath($cwd);
 }
@@ -39,7 +39,8 @@ sub _catpath {
 }
 
 sub _chdir {
-    my($new_dir) = @_;
+    # Untaint target directory
+    my ($new_dir) = $_[0] =~ /(.*)/s;
 
     local $Carp::CarpLevel = $Carp::CarpLevel + 1;
     if ( ! CORE::chdir($new_dir) ) {
@@ -295,7 +296,7 @@ which is much simpler than the equivalent:
 
     sub foo {
         use Cwd;
-        my $orig_dir = Cwd::abs_path;
+        my $orig_dir = Cwd::getcwd;
         chdir('some/other/dir');
 
         ...do your work...
