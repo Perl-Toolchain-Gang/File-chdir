@@ -193,9 +193,7 @@ sub _chdir {
 1;
 __END__
 
-=begin wikidoc
-
-= SYNOPSIS
+=head1 SYNOPSIS
 
   use File::chdir;
 
@@ -207,21 +205,21 @@ __END__
 
   # still in /foo/bar!
 
-= DESCRIPTION
+=head1 DESCRIPTION
 
-Perl's {chdir()} has the unfortunate problem of being very, very, very
-global.  If any part of your program calls {chdir()} or if any library
-you use calls {chdir()}, it changes the current working directory for
+Perl's C<chdir()> has the unfortunate problem of being very, very, very
+global.  If any part of your program calls C<chdir()> or if any library
+you use calls C<chdir()>, it changes the current working directory for
 the *whole* program.
 
 This sucks.
 
-File::chdir gives you an alternative, {$CWD} and {@CWD}.  These two
-variables combine all the power of {chdir()}, [File::Spec] and [Cwd].
+File::chdir gives you an alternative, C<$CWD> and C<@CWD>.  These two
+variables combine all the power of C<chdir()>, L<File::Spec> and L<Cwd>.
 
-= $CWD
+=head1 $CWD
 
-Use the {$CWD} variable instead of {chdir()} and Cwd.
+Use the C<$CWD> variable instead of C<chdir()> and Cwd.
 
     use File::chdir;
     $CWD = $dir;  # just like chdir($dir)!
@@ -235,17 +233,17 @@ It can be localized, and it does the right thing.
     }
     # still /foo out here!
 
-{$CWD} always returns the absolute path in the native form for the
+C<$CWD> always returns the absolute path in the native form for the
 operating system.
 
-{$CWD} and normal {chdir()} work together just fine.
+C<$CWD> and normal C<chdir()> work together just fine.
 
-= @CWD
+=head1 @CWD
 
-{@CWD} represents the current working directory as an array, each
+C<@CWD> represents the current working directory as an array, each
 directory in the path is an element of the array.  This can often make
 the directory easier to manipulate, and you don't have to fumble with
-{File::Spec->splitpath} and {File::Spec->catdir} to make portable code.
+C<File::Spec->splitpath> and C<File::Spec->catdir> to make portable code.
 
   # Similar to chdir("/usr/local/src/perl")
   @CWD = qw(usr local src perl);
@@ -256,15 +254,15 @@ probably the most useful.
   pop @CWD;                 # same as chdir(File::Spec->updir)
   push @CWD, 'some_dir'     # same as chdir('some_dir')
 
-{@CWD} and {$CWD} both work fine together.
+C<@CWD> and C<$CWD> both work fine together.
 
-*NOTE* Due to a perl bug you can't localize {@CWD}.  See [/CAVEATS] for a work around.
+*NOTE* Due to a perl bug you can't localize C<@CWD>.  See L</CAVEATS> for a work around.
 
-= EXAMPLES
+=head1 EXAMPLES
 
-(We omit the {use File::chdir} from these examples for terseness)
+(We omit the C<use File::chdir> from these examples for terseness)
 
-Here's {$CWD} instead of {chdir()}:
+Here's C<$CWD> instead of C<chdir()>:
 
     $CWD = 'foo';           # chdir('foo')
 
@@ -272,7 +270,7 @@ and now instead of Cwd.
 
     print $CWD;             # use Cwd;  print Cwd::abs_path
 
-you can even do zsh style {cd foo bar}
+you can even do zsh style C<cd foo bar>
 
     $CWD = '/usr/local/foo';
     $CWD =~ s/usr/var/;
@@ -304,7 +302,7 @@ which is much simpler than the equivalent:
         chdir($orig_dir);
     }
 
-{@CWD} comes in handy when you want to start moving up and down the
+C<@CWD> comes in handy when you want to start moving up and down the
 directory hierarchy in a cross-platform manner without having to use
 File::Spec.
 
@@ -316,11 +314,11 @@ You can easily change your parent directory:
     # chdir from /some/dir/bar/moo to /some/dir/foo/moo
     $CWD[-2] = 'foo';
 
-= CAVEATS
+=head1 CAVEATS
 
-=== {local @CWD} does not work.
+=head2 C<local @CWD> does not work.
 
-{local @CWD} will not localize {@CWD}.  This is a bug in Perl, you
+C<local @CWD> will not localize C<@CWD>.  This is a bug in Perl, you
 can't localize tied arrays.  As a work around localizing $CWD will
 effectively localize @CWD.
 
@@ -330,11 +328,11 @@ effectively localize @CWD.
         ...
     }
 
-=== Assigning to {@CWD} calls {chdir()} for each element
+=head2 Assigning to C<@CWD> calls C<chdir()> for each element
 
     @CWD = qw/a b c d/;
 
-Internally, Perl clears {@CWD} and assigns each element in turn.  Thus, this
+Internally, Perl clears C<@CWD> and assigns each element in turn.  Thus, this
 code above will do this:
 
     chdir 'a';
@@ -342,16 +340,16 @@ code above will do this:
     chdir 'a/b/c';
     chdir 'a/b/c/d';
 
-Generally, avoid assigning to {@CWD} and just use push and pop instead.
+Generally, avoid assigning to C<@CWD> and just use push and pop instead.
 
-=== Volumes not handled
+=head2 Volumes not handled
 
 There is currently no way to change the current volume via File::chdir.
 
-= NOTES
+=head1 NOTES
 
-{$CWD} returns the current directory using native path separators, i.e. \
-on Win32.  This ensures that {$CWD} will compare correctly with directories
+C<$CWD> returns the current directory using native path separators, i.e. \
+on Win32.  This ensures that C<$CWD> will compare correctly with directories
 created using File::Spec.  For example:
 
     my $working_dir = File::Spec->catdir( $CWD, "foo" );
@@ -359,7 +357,7 @@ created using File::Spec.  For example:
     doing_stuff_might_chdir();
     is( $CWD, $working_dir, "back to original working_dir?" );
 
-Deleting the last item of {@CWD} will act like a pop.  Deleting from the
+Deleting the last item of C<@CWD> will act like a pop.  Deleting from the
 middle will throw an exception.
 
     delete @CWD[-1]; # OK
@@ -370,36 +368,34 @@ What should %CWD do?  Something with volumes?
     # chdir to C:\Program Files\Sierra\Half Life ?
     $CWD{C} = '\\Program Files\\Sierra\\Half Life';
 
-= DIAGNOSTICS
+=head1 DIAGNOSTICS
 
-If an error is encountered when changing {$CWD} or {@CWD}, one of
+If an error is encountered when changing C<$CWD> or C<@CWD>, one of
 the following exceptions will be thrown:
 
 * ~Can't delete except at the end of @CWD~
 * ~Failed to change directory to '$dir'~
 
-= HISTORY
+=head1 HISTORY
 
-Michael wanted {local chdir} to work.  p5p didn't.  But it wasn't over!
+Michael wanted C<local chdir> to work.  p5p didn't.  But it wasn't over!
 Was it over when the Germans bombed Pearl Harbor?  Hell, no!
 
-Abigail and/or Bryan Warnock suggested the {$CWD} thing (Michael forgets
+Abigail and/or Bryan Warnock suggested the C<$CWD> thing (Michael forgets
 which).  They were right.
 
-The {chdir()} override was eliminated in 0.04.
+The C<chdir()> override was eliminated in 0.04.
 
 David became co-maintainer with 0.06_01 to fix some chronic
 Win32 path bugs.
 
-As of 0.08, if changing {$CWD} or {@CWD} fails to change the directory, an
+As of 0.08, if changing C<$CWD> or C<@CWD> fails to change the directory, an
 error will be thrown.
 
-= SEE ALSO
+=head1 SEE ALSO
 
-[File::pushd], [File::Spec], [Cwd], [perlfunc/chdir],
-"Animal House" [http://www.imdb.com/title/tt0077975/quotes]
-
-=end wikidoc
+L<File::pushd>, L<File::Spec>, L<Cwd>, L<perlfunc/chdir>,
+"Animal House" L<http://www.imdb.com/title/tt0077975/quotes>
 
 =cut
 
