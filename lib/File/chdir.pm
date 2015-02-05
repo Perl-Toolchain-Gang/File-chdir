@@ -4,7 +4,7 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
 # ABSTRACT: a more sensible way to change directories
 
-our $VERSION = '0.1010';
+our $VERSION = '0.1011';
 
 require Exporter;
 @ISA = qw(Exporter);
