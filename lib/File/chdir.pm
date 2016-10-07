@@ -244,7 +244,7 @@ C<$CWD> and normal C<chdir()> work together just fine.
 C<@CWD> represents the current working directory as an array, each
 directory in the path is an element of the array.  This can often make
 the directory easier to manipulate, and you don't have to fumble with
-C<File::Spec->splitpath> and C<File::Spec->catdir> to make portable code.
+C<< File::Spec->splitpath >> and C<< File::Spec->catdir >> to make portable code.
 
   # Similar to chdir("/usr/local/src/perl")
   @CWD = qw(usr local src perl);
@@ -349,7 +349,7 @@ There is currently no way to change the current volume via File::chdir.
 
 =head1 NOTES
 
-C<$CWD> returns the current directory using native path separators, i.e. \
+C<$CWD> returns the current directory using native path separators, i.e. C<\>
 on Win32.  This ensures that C<$CWD> will compare correctly with directories
 created using File::Spec.  For example:
 
