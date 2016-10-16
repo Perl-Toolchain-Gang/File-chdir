@@ -77,6 +77,11 @@ Then you need to install any plugins specific to this distribution:
     $ cpan `dzil authordeps`
     $ dzil authordeps | cpanm
 
+and
+
+    $ cpan `dzil listdeps --author`
+    $ dzil listdeps --author | cpanm
+
 Once installed, here are some dzil commands you might try:
 
     $ dzil build
