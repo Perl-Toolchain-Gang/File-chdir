@@ -1,7 +1,7 @@
 package File::chdir;
 use 5.004;
 use strict;
-use vars qw($VERSION @ISA @EXPORT $CWD @CWD);
+use vars qw($VERSION @ISA @EXPORT @EXPORT_OK $CWD @CWD);
 # ABSTRACT: a more sensible way to change directories
 
 our $VERSION = '0.1012';
@@ -9,6 +9,7 @@ our $VERSION = '0.1012';
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(*CWD);
+@EXPORT_OK = qw( $CWD @CWD );
 
 use Carp;
 use Cwd 3.16;
